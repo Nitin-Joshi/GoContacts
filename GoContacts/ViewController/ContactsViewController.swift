@@ -2,29 +2,31 @@
 //  MasterViewController.swift
 //  GoContacts
 //
-//  Created by Nitin Joshi E0282 on 19/09/19.
+//  Created by Nitin Joshi on 19/09/19.
 //  Copyright © 2019 Nitin Joshi. All rights reserved.
 //
 
 import UIKit
 
 class ContactsViewController: UITableViewController {
-
+    
     var detailViewController: DetailViewController? = nil
     var objects = [Any]()
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        navigationItem.leftBarButtonItem = editButtonItem
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+        let groupButton = UIBarButtonItem(title: "Groups", style: .plain, target: self, action: nil, tintColor:Constants.Colors.MainAppColor)
+        navigationItem.leftBarButtonItem = groupButton
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)), tintColor:Constants.Colors.MainAppColor)
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
+        
+        navigationItem.title = "Contact"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -38,9 +40,10 @@ class ContactsViewController: UITableViewController {
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
+}
 
     // MARK: - Segues
-
+extension ContactsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
@@ -52,9 +55,9 @@ class ContactsViewController: UITableViewController {
             }
         }
     }
-
-    // MARK: - Table View
-
+}
+    // MARK: - Table View Data Source and Delegate
+extension ContactsViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -64,10 +67,15 @@ class ContactsViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactTableViewCell", for: indexPath) as! ContactTableViewCell
 
         let object = objects[indexPath.row] as! NSDate
-        cell.textLabel!.text = object.description
+//        cell.profilePicture!.image =
+        cell.contactName!.text = object.description
+//        cell.favContactIcon!.image =
+        
+//        cell.favIconTrailingMarginConstraint!.constant =
+
         return cell
     }
 
@@ -84,7 +92,4 @@ class ContactsViewController: UITableViewController {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
     }
-
-
 }
-

@@ -78,29 +78,56 @@
         <scene sceneID="smW-Zh-WAh">
             <objects>
                 <tableViewController title="Contacts" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="ContactsViewController" customModule="GoContacts" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="64" estimatedRowHeight="64" sectionHeaderHeight="18" sectionFooterHeight="18" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="Arm-wq-HPj" style="IBUITableViewCellStyleDefault" id="WCw-Qf-5nD">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ContactTableViewCell" id="WCw-Qf-5nD" customClass="ContactTableViewCell" customModule="GoContacts" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="414" height="64"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="63.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Arm-wq-HPj">
-                                            <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ULa-Ps-Ivf">
+                                            <rect key="frame" x="16" y="12" width="39.5" height="39.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="ULa-Ps-Ivf" secondAttribute="height" multiplier="1:1" id="Man-xS-AlB"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qUR-SG-lTy">
+                                            <rect key="frame" x="71.5" y="21.5" width="255.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KwB-up-tL6">
+                                            <rect key="frame" x="343" y="23" width="19" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="18" id="apM-b1-FEt"/>
+                                                <constraint firstAttribute="width" constant="19" id="rdm-vf-u0k"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="qUR-SG-lTy" firstAttribute="leading" secondItem="ULa-Ps-Ivf" secondAttribute="trailing" constant="16" id="062-4t-NfS"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="KwB-up-tL6" secondAttribute="trailing" constant="32" id="Alz-f0-sLF"/>
+                                        <constraint firstAttribute="bottom" secondItem="ULa-Ps-Ivf" secondAttribute="bottom" constant="12" id="D4p-Kh-HBB"/>
+                                        <constraint firstItem="qUR-SG-lTy" firstAttribute="centerY" secondItem="37f-cq-3Eg" secondAttribute="centerY" id="GCA-FX-tVj"/>
+                                        <constraint firstItem="ULa-Ps-Ivf" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="16" id="Jwx-MM-FfL"/>
+                                        <constraint firstItem="KwB-up-tL6" firstAttribute="centerY" secondItem="37f-cq-3Eg" secondAttribute="centerY" id="NxJ-70-A0a"/>
+                                        <constraint firstItem="ULa-Ps-Ivf" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="12" id="WyP-CP-R47"/>
+                                        <constraint firstItem="KwB-up-tL6" firstAttribute="leading" secondItem="qUR-SG-lTy" secondAttribute="trailing" constant="16" id="si9-kv-G1E"/>
+                                        <constraint firstItem="ULa-Ps-Ivf" firstAttribute="centerY" secondItem="37f-cq-3Eg" secondAttribute="centerY" id="zyW-Ih-vLC"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
+                                    <outlet property="contactName" destination="qUR-SG-lTy" id="VOk-PD-j7X"/>
+                                    <outlet property="favContactIcon" destination="KwB-up-tL6" id="8lz-di-CJM"/>
+                                    <outlet property="favIconTrailingMarginConstraint" destination="Alz-f0-sLF" id="mln-jb-yJi"/>
+                                    <outlet property="profilePicture" destination="ULa-Ps-Ivf" id="gMw-RA-Pyo"/>
                                     <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="6S0-TO-JiA"/>
                                 </connections>
                             </tableViewCell>
@@ -135,6 +162,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Tll-UG-LXB"/>
+        <segue reference="6S0-TO-JiA"/>
     </inferredMetricsTieBreakers>
 </document>

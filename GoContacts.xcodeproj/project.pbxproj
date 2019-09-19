@@ -17,6 +17,7 @@
 		930FD98C2333C7670048FAEE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 930FD97C2333C6E50048FAEE /* Main.storyboard */; };
 		930FD9902333E7670048FAEE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD98F2333E7670048FAEE /* Constants.swift */; };
 		930FD9922333F63B0048FAEE /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9912333F63B0048FAEE /* Utility.swift */; };
+		930FD9952334135A0048FAEE /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9942334135A0048FAEE /* ContactTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		930FD97F2333C6E50048FAEE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		930FD98F2333E7670048FAEE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		930FD9912333F63B0048FAEE /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		930FD9942334135A0048FAEE /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				930FD9782333C6E50048FAEE /* Supporting Files */,
 				930FD9742333C6E50048FAEE /* ViewController */,
 				930FD9772333C6E50048FAEE /* ViewModels */,
+				930FD993233412AA0048FAEE /* Views */,
 			);
 			path = GoContacts;
 			sourceTree = "<group>";
@@ -164,6 +167,14 @@
 				930FD9912333F63B0048FAEE /* Utility.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		930FD993233412AA0048FAEE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				930FD9942334135A0048FAEE /* ContactTableViewCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,6 +312,7 @@
 				930FD9872333C7500048FAEE /* AppDelegate.swift in Sources */,
 				930FD9882333C7500048FAEE /* DetailViewController.swift in Sources */,
 				930FD9892333C7500048FAEE /* ContactsViewController.swift in Sources */,
+				930FD9952334135A0048FAEE /* ContactTableViewCell.swift in Sources */,
 				930FD9902333E7670048FAEE /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

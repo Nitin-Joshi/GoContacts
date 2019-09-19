@@ -2,7 +2,7 @@
 //  DetailViewController.swift
 //  GoContacts
 //
-//  Created by Nitin Joshi E0282 on 19/09/19.
+//  Created by Nitin Joshi on 19/09/19.
 //  Copyright © 2019 Nitin Joshi. All rights reserved.
 //
 
