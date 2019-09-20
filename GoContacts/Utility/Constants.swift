@@ -17,7 +17,7 @@ class Constants: NSObject {
     
     public struct URLConstant {
         public static let BaseUrl = "http://gojek-contacts-app.herokuapp.com"
-        public static let ContactUrl = "/contacts.json"
+        public static let ContactsEndPoint = "/contacts.json"
     }
     
 }

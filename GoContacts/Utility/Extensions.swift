@@ -74,9 +74,12 @@ extension ReusableView where Self: UIView {
 }
 
 extension Constants.URLConstant {
-    public static var FullUrl:String {
+    /**
+     Full backend path for contacts data
+     */
+    public static var ContactsPath:String {
         get {
-            return String(BaseUrl + ContactUrl)
+            return String(BaseUrl + ContactsEndPoint)
         }
     }
 }
