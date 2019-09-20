@@ -1,5 +1,5 @@
 //
-//  MasterViewController.swift
+//  ContactsViewController.swift
 //  GoContacts
 //
 //  Created by Nitin Joshi on 19/09/19.
@@ -11,7 +11,7 @@ import UIKit
 class ContactsViewController: UITableViewController {
     
     var detailViewController: DetailViewController? = nil
-    var objects = [Any]()
+    var objects = [String]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,11 +21,12 @@ class ContactsViewController: UITableViewController {
         
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)), tintColor:Constants.Colors.MainAppColor)
         navigationItem.rightBarButtonItem = addButton
+        
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
-        
+                
         navigationItem.title = "Contact"
     }
 
@@ -36,18 +37,18 @@ class ContactsViewController: UITableViewController {
 
     @objc
     func insertNewObject(_ sender: Any) {
-        objects.insert(NSDate(), at: 0)
+        objects.insert("Nitin Joshi", at: 0)
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
 }
 
-    // MARK: - Segues
+// MARK: - Segues
 extension ContactsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
-                let object = objects[indexPath.row] as! NSDate
+                let object = objects[indexPath.row]
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = object
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -56,7 +57,8 @@ extension ContactsViewController {
         }
     }
 }
-    // MARK: - Table View Data Source and Delegate
+
+// MARK: - Table View Data Source and Delegate
 extension ContactsViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -67,15 +69,10 @@ extension ContactsViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactTableViewCell", for: indexPath) as! ContactTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ContactTableViewCell.defaultReuseIdentifier, for: indexPath) as! ContactTableViewCell
 
-        let object = objects[indexPath.row] as! NSDate
-//        cell.profilePicture!.image =
-        cell.contactName!.text = object.description
-//        cell.favContactIcon!.image =
-        
-//        cell.favIconTrailingMarginConstraint!.constant =
-
+        let object = objects[indexPath.row]
+        cell.SetUi(profileImage: nil, name: object)
         return cell
     }
 
