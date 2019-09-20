@@ -14,11 +14,11 @@
 		930FD9882333C7500048FAEE /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9752333C6E50048FAEE /* DetailViewController.swift */; };
 		930FD9892333C7500048FAEE /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9762333C6E50048FAEE /* ContactsViewController.swift */; };
 		930FD98A2333C7670048FAEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 930FD9792333C6E50048FAEE /* Assets.xcassets */; };
-		930FD98B2333C7670048FAEE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 930FD97A2333C6E50048FAEE /* LaunchScreen.storyboard */; };
-		930FD98C2333C7670048FAEE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 930FD97C2333C6E50048FAEE /* Main.storyboard */; };
 		930FD9902333E7670048FAEE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD98F2333E7670048FAEE /* Constants.swift */; };
 		930FD9922333F63B0048FAEE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9912333F63B0048FAEE /* Extensions.swift */; };
 		930FD9952334135A0048FAEE /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9942334135A0048FAEE /* ContactTableViewCell.swift */; };
+		930FD997233522D30048FAEE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 930FD97A2333C6E50048FAEE /* LaunchScreen.storyboard */; };
+		930FD998233522D30048FAEE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 930FD97C2333C6E50048FAEE /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +111,7 @@
 				930FD9782333C6E50048FAEE /* Supporting Files */,
 				930FD9742333C6E50048FAEE /* ViewController */,
 				930FD9772333C6E50048FAEE /* ViewModels */,
+				930FD996233521D40048FAEE /* Models */,
 				930FD993233412AA0048FAEE /* Views */,
 			);
 			path = GoContacts;
@@ -154,8 +155,6 @@
 			isa = PBXGroup;
 			children = (
 				930FD9792333C6E50048FAEE /* Assets.xcassets */,
-				930FD97A2333C6E50048FAEE /* LaunchScreen.storyboard */,
-				930FD97C2333C6E50048FAEE /* Main.storyboard */,
 				930FD97E2333C6E50048FAEE /* AppDelegate.swift */,
 				930FD97F2333C6E50048FAEE /* Info.plist */,
 			);
@@ -174,10 +173,19 @@
 		930FD993233412AA0048FAEE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				930FD97A2333C6E50048FAEE /* LaunchScreen.storyboard */,
+				930FD97C2333C6E50048FAEE /* Main.storyboard */,
 				930FD9942334135A0048FAEE /* ContactTableViewCell.swift */,
 				722F55A82334C12200AE1BC1 /* CustomUIImageView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		930FD996233521D40048FAEE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,9 +292,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				930FD997233522D30048FAEE /* LaunchScreen.storyboard in Resources */,
+				930FD998233522D30048FAEE /* Main.storyboard in Resources */,
 				930FD98A2333C7670048FAEE /* Assets.xcassets in Resources */,
-				930FD98B2333C7670048FAEE /* LaunchScreen.storyboard in Resources */,
-				930FD98C2333C7670048FAEE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
