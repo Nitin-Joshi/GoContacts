@@ -11,7 +11,8 @@ import UIKit
 class Constants: NSObject {
 
     public struct Colors {
-        public static let MainAppColor = UIColor(red: 80/255, green: 227/255, blue: 194/255, alpha: 1)
+        public static let MainAppColor = UIColor(hex: "#50E3C2") ?? UIColor.green
+        public static let TextColor = UIColor(hex: "#4A4A4A") ?? UIColor.darkText
     }
     
 }

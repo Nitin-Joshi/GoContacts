@@ -60,3 +60,7 @@ class ContactTableViewCell: UITableViewCell {
     }
     
 }
+
+extension ContactTableViewCell : ReusableView {
+    
+}
