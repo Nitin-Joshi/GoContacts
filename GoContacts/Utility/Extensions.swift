@@ -73,3 +73,11 @@ extension ReusableView where Self: UIView {
     }
 }
 
+extension Constants.URLConstant {
+    public static var FullUrl:String {
+        get {
+            return String(BaseUrl + ContactUrl)
+        }
+    }
+}
+

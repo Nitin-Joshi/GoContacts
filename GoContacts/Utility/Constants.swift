@@ -15,4 +15,9 @@ class Constants: NSObject {
         public static let TextColor = UIColor(hex: "#4A4A4A") ?? UIColor.darkText
     }
     
+    public struct URLConstant {
+        public static let BaseUrl = "http://gojek-contacts-app.herokuapp.com"
+        public static let ContactUrl = "/contacts.json"
+    }
+    
 }
