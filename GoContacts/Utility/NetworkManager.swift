@@ -25,9 +25,11 @@ enum Result<String>{
 
 public typealias NetworkCompletion<T: Codable> = (_ ContactsList: [T]?,_ error: String?)->()
 
-class NetworkManager {
-    static let sharedInstance = NetworkManager()
-    private init() { } //will make sure class is not initialised anywhere else
+public class NetworkManager {
+    
+    public init () {
+        
+    }
     
     public func GetData<T: Codable> (urlPath: String, decodingType: T.Type, completion: @escaping NetworkCompletion<T>) {
         let session = URLSession.shared

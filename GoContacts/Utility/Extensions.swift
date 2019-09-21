@@ -84,3 +84,34 @@ extension Constants.URLConstant {
     }
 }
 
+extension UILocalizedIndexedCollation {
+    
+    /**
+     Splits the array into alphabetical section sorted alphabetical
+     */
+    func splitAndSortArray (array:[AnyObject], collationStringSelector:Selector) -> ([AnyObject], [String]) {
+        var unsortedSections = [[AnyObject]]()
+        
+        //Create a array to hold the data for each section
+        for _ in self.sectionTitles {
+            unsortedSections.append([]) //appending an empty array
+        }
+        
+        // Populate name into sections
+        for item in array {
+            let index:Int = self.section(for: item, collationStringSelector:collationStringSelector)
+            unsortedSections[index].append(item)
+        }
+        
+        // Sorting the array of each sections
+        var sectionTitles = [String]()
+        var sections = [AnyObject]()
+        for index in 0 ..< unsortedSections.count { if unsortedSections[index].count > 0 {
+            sectionTitles.append(self.sectionTitles[index])
+            sections.append(self.sortedArray(from: unsortedSections[index], collationStringSelector: collationStringSelector) as AnyObject)
+            }
+        }
+        
+        return (sections, sectionTitles)
+    }
+}
