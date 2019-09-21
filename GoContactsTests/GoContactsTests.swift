@@ -11,11 +11,16 @@ import XCTest
 
 class GoContactsTests: XCTestCase {
 
+    var networkManager: NetworkManager!
+
     override func setUp() {
         super.setUp()
+        networkManager = NetworkManager()
     }
 
     override func tearDown() {
+        networkManager = nil
+        
         super.tearDown()
     }
 
@@ -58,5 +63,15 @@ class GoContactsTests: XCTestCase {
     func testUIImageExtensionForNull () {
         let callButtonImage = UIImage(AssetImageName: .call_button)
         XCTAssertNotNil(callButtonImage, "UIImage should not be null")
-    }    
+    }
+    
+    // MARK:- Network mangaer
+    func testGetDataWithWrongUrl () {
+        let wrongUrlPath = "http://www.googlemmmmm.co.in"
+        networkManager!.GetData(urlPath: wrongUrlPath, decodingType: Contact.self) { (contacts, error) in
+            
+            XCTAssertNotNil(error, "Function is not able to handle wrong URl!!")
+        }
+    }
+    
 }
