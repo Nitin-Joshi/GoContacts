@@ -23,13 +23,13 @@ enum Result<String>{
     case failure(String)
 }
 
-public typealias NetworkCompletion = (_ ContactsList: [Contact]?,_ error: String?)->()
+public typealias NetworkCompletion<T: Decodable> = (_ ContactsList: [T]?,_ error: String?)->()
 
 class NetworkManager {
     static let sharedInstance = NetworkManager()
     private init() { } //will make sure class is not initialised anywhere else
     
-    public func GetData (urlPath: String, completion: @escaping NetworkCompletion) {
+    public func GetData<T: Decodable> (urlPath: String, completion: @escaping NetworkCompletion<T>) {
         let session = URLSession.shared
         let url = URL(string: urlPath)!
         
@@ -60,11 +60,8 @@ class NetworkManager {
                 
                 do {
                     print(responseData)
-                    let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
-                    print(jsonData)
-                    let jsonReponse = try JSONDecoder().decode([Contact].self, from: responseData)
+                    let jsonReponse = try JSONDecoder().decode([T].self, from: responseData)
                     completion(jsonReponse, nil)
-                    
                 } catch {
                     print("JSON error: \(error.localizedDescription)")
                     completion(nil, NetworkResponse.unableToDecode.rawValue)
