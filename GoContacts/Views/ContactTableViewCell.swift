@@ -21,7 +21,7 @@ class ContactTableViewCell: UITableViewCell {
 
     //Private variables
     private struct FavIconTrailingMargin {
-        public static let Show: CGFloat = 32
+        public static let Show: CGFloat = 16
         public static let Hide: CGFloat = -24
     }
 

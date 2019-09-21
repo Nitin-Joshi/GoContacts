@@ -24,11 +24,6 @@ class GoContactsTests: XCTestCase {
         super.tearDown()
     }
 
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct results.
-//    }
-//
 //    func testPerformanceExample() {
 //        // This is an example of a performance test case.
 //        self.measure {
@@ -73,5 +68,4 @@ class GoContactsTests: XCTestCase {
             XCTAssertNotNil(error, "Function is not able to handle wrong URl!!")
         }
     }
-    
 }

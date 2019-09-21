@@ -10,11 +10,11 @@ import Foundation
 
 public struct Contact {
     let id: Int
-    let firstName, lastName, email, phoneNumber: String?
-    let profilePic: String?
-    let favorite: Bool
-    let createdAt, updatedAt: String?
-    let detailUrl: String?
+    var firstName, lastName, email, phoneNumber: String?
+    var profilePic: String?
+    var favorite: Bool
+    var createdAt, updatedAt: String?
+    var detailUrl: String?
 }
 
 extension Contact : Codable {
