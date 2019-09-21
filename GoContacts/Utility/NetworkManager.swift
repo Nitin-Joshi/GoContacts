@@ -23,7 +23,8 @@ enum Result<String>{
     case failure(String)
 }
 
-public typealias NetworkCompletion<T: Codable> = (_ ContactsList: [T]?,_ error: String?)->()
+public typealias NetworkCompletionWithArray<T: Codable> = (_ ContactsList: [T]?,_ error: String?)->()
+public typealias NetworkCompletion<T: Codable> = (_ Contact: T?,_ error: String?)->()
 
 public class NetworkManager {
     
@@ -31,7 +32,53 @@ public class NetworkManager {
         
     }
     
+    public func GetArrayData<T: Codable> (urlPath: String, decodingType: T.Type, completion: @escaping NetworkCompletionWithArray<T>) {
+        self.GetData(urlPath: urlPath, completion: { (data, error) in
+            
+            if error != nil {
+                completion(nil, error)
+                return
+            }
+
+            guard let responseData = data else {
+                completion(nil, NetworkResponse.noData.rawValue)
+                return
+            }
+
+            do {
+                let jsonReponse = try JSONDecoder().decode([T].self, from: responseData)
+                completion(jsonReponse, nil)
+            } catch {
+                print("JSON error: \(error.localizedDescription)")
+                completion(nil, NetworkResponse.unableToDecode.rawValue)
+            }
+        })
+    }
+
     public func GetData<T: Codable> (urlPath: String, decodingType: T.Type, completion: @escaping NetworkCompletion<T>) {
+        self.GetData(urlPath: urlPath, completion: { (data, error) in
+            
+            if error != nil {
+                completion(nil, error)
+                return
+            }
+            
+            guard let responseData = data else {
+                completion(nil, NetworkResponse.noData.rawValue)
+                return
+            }
+            
+            do {
+                let jsonReponse = try JSONDecoder().decode(T.self, from: responseData)
+                completion(jsonReponse, nil)
+            } catch {
+                print("JSON error: \(error.localizedDescription)")
+                completion(nil, NetworkResponse.unableToDecode.rawValue)
+            }
+        })
+    }
+    
+    private func GetData (urlPath: String, completion: @escaping (_ data: Data?,_ error: String?)->()) {
         let session = URLSession.shared
         let url = URL(string: urlPath)!
         
@@ -55,19 +102,7 @@ public class NetworkManager {
             let result = self.handleNetworkResponse(response)
             switch(result) {
             case .success :
-                guard let responseData = data else {
-                    completion(nil, NetworkResponse.noData.rawValue)
-                    return
-                }
-                
-                do {
-                    print(responseData)
-                    let jsonReponse = try JSONDecoder().decode([T].self, from: responseData)
-                    completion(jsonReponse, nil)
-                } catch {
-                    print("JSON error: \(error.localizedDescription)")
-                    completion(nil, NetworkResponse.unableToDecode.rawValue)
-                }
+                completion(data, nil)
             case .failure(let networkFailureError) :
                 completion(nil, networkFailureError)
             }

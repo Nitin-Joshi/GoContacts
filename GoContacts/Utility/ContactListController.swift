@@ -12,6 +12,7 @@ import UIKit
  @objc protocol ControllerDelegate {
     @objc optional func ShowAlertMessage (message: String)
     @objc optional func ReloadTableView ()
+    @objc optional func NavigateToDetailPageWithContact (contactId: Int, indexPath: IndexPath)
 }
 
 class ContactListController {
@@ -36,7 +37,8 @@ class ContactListController {
  Download and initialises contacts collections
  */
     func GetContacts () {
-        networkManager!.GetData(urlPath: Constants.URLConstant.ContactsPath, decodingType: Contact.self) { (contacts, error) in
+        let urlPath = String("\(Constants.URLConstant.ContactsPath).json")
+        networkManager!.GetArrayData(urlPath: urlPath, decodingType: Contact.self) { (contacts, error) in
             if(error != nil)
             {
                 self.controllerDelegate!.ShowAlertMessage?(message: error!)
@@ -58,6 +60,33 @@ class ContactListController {
             self.sectionList = sectionList
             
             self.controllerDelegate!.ReloadTableView?()
+        }
+    }
+    
+    /**
+     Download and populate contact detail in collection
+     */
+    func GetContactDetail (contactId: Int, indexPath: IndexPath) {
+        
+        var urlPath = self.contactList[indexPath.section][indexPath.row].DetailUrl
+        if (urlPath.isEmpty) {
+           urlPath = String("\(Constants.URLConstant.ContactsPath)/\(contactId).json")
+        }
+        
+        networkManager!.GetData(urlPath: urlPath, decodingType: Contact.self) { (contact, error) in
+            if(error != nil)
+            {
+                self.controllerDelegate!.ShowAlertMessage?(message: error!)
+                return
+            }
+            
+            //Add extra details for contact to the collection
+            if let contactDetail = contact {
+                let contactToBeupdated = self.contactList[indexPath.section][indexPath.row]
+                contactToBeupdated.UpdateExtraDetail(contactDetail: contactDetail)
+                
+                self.controllerDelegate!.NavigateToDetailPageWithContact?(contactId: contactId, indexPath: indexPath)
+            }
         }
     }
 }
