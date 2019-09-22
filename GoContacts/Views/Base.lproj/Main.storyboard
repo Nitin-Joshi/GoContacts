@@ -288,7 +288,7 @@
         <!--Contacts-->
         <scene sceneID="smW-Zh-WAh">
             <objects>
-                <tableViewController title="Contacts" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="ContactsViewController" customModule="GoContacts" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ContactsViewController" title="Contacts" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="ContactsViewController" customModule="GoContacts" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="64" estimatedRowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="18" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

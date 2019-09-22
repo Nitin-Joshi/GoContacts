@@ -12,14 +12,18 @@ import XCTest
 class GoContactsTests: XCTestCase {
 
     var networkManager: NetworkManager!
+    var viewController: ContactsViewController!
 
     override func setUp() {
         super.setUp()
         networkManager = NetworkManager()
+        viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactsViewController") as! ContactsViewController
+
     }
 
     override func tearDown() {
         networkManager = nil
+        viewController = nil
         
         super.tearDown()
     }
@@ -68,4 +72,43 @@ class GoContactsTests: XCTestCase {
             XCTAssertNotNil(error, "Function is not able to handle wrong URl!!")
         }
     }
+    
+    // MARK:- Extensions
+    func testdefaultReuseIdentifierNotNull () {
+        var celldefaultId = DetailTableViewCell.defaultReuseIdentifier
+        XCTAssertNotNil(celldefaultId, "reusable identifier should not be null!!")
+        
+        celldefaultId = ContactTableViewCell.defaultReuseIdentifier
+        XCTAssertNotNil(celldefaultId, "reusable identifier should not be null!!")
+
+    }
+    
+    func testsplitAndSortArrayNotNull () {
+        
+        viewController.contactListController = ContactListController(viewController.self, UILocalizedIndexedCollation.current())
+        
+        let mockContactArray = [ContactsViewModel(contact: Contact(id: 1, firstName: "apple", lastName: nil, email: nil, phoneNumber: nil, profilePic: nil, favorite: false, createdAt: nil, updatedAt: nil, detailUrl: nil)),
+                                ContactsViewModel(contact: Contact(id: 1, firstName: "ball", lastName: nil, email: nil, phoneNumber: nil, profilePic: nil, favorite: false, createdAt: nil, updatedAt: nil, detailUrl: nil))]
+        
+        let selector = #selector(getter: CollationIndexable.CollationSelectorString)
+        let (contactArray, sectionList) = UILocalizedIndexedCollation.current().splitAndSortArray(array: mockContactArray as [AnyObject], collationStringSelector: selector)
+        
+        XCTAssertNotNil(contactArray, "Array should not be null!!")
+        XCTAssertNotNil(sectionList, "Array should not be null!!")
+        
+        XCTAssertEqual(sectionList.count, 2, "Array is not partitioned properly!!")
+        XCTAssertEqual(contactArray.count, 2, "Array is not partitioned properly!!")
+        XCTAssertEqual(contactArray[0].count, 1, "Array is not partitioned properly!!")
+        XCTAssertEqual(contactArray[1].count, 1, "Array is not partitioned properly!!")
+    }
+
+    func testGetReusableStringNotNull () {
+        var celldefaultId = DetailTableViewCell.defaultReuseIdentifier
+        XCTAssertNotNil(celldefaultId, "reusable identifier should not be null!!")
+        
+        celldefaultId = ContactTableViewCell.defaultReuseIdentifier
+        XCTAssertNotNil(celldefaultId, "reusable identifier should not be null!!")
+        
+    }
+
 }
