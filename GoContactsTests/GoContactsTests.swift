@@ -17,7 +17,7 @@ class GoContactsTests: XCTestCase {
     override func setUp() {
         super.setUp()
         networkManager = NetworkManager()
-        viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactsViewController") as! ContactsViewController
+        viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactsViewController") as? ContactsViewController
 
     }
 
