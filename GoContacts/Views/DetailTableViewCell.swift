@@ -32,6 +32,8 @@ class DetailTableViewCell: UITableViewCell {
     var isEditMode: Bool = false
     var inputValue: InputValue!
     
+    var valueChanged: ((_ inputValue:InputValue, _ value: String)->())?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -39,8 +41,6 @@ class DetailTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         self.inputType = .Text
         self.isEditMode = false
-        
-//        self.inputTitleWidthConstraint.isActive = false
     }
 
     func SetUi (userData:String, inputValue: InputValue, inputType: InputType, isEditMode:Bool) {
@@ -51,8 +51,11 @@ class DetailTableViewCell: UITableViewCell {
         // Enable user editting for edit mode
         self.inputBox.isUserInteractionEnabled = isEditMode
         self.inputBox.text = userData
+        self.inputBox.delegate = self
+        self.inputBox.textColor = Constants.Colors.TextColor
 
         self.inputTitle.text = inputValue.rawValue
+        self.inputTitle.textColor = Constants.Colors.TextColor.withAlphaComponent(0.5)
 
         switch inputType {
         case .Text:
@@ -65,12 +68,36 @@ class DetailTableViewCell: UITableViewCell {
         
         if(isEditMode)
         {
-//            self.inputTitleWidthConstraint.isActive = true
+            self.inputTitleWidthConstraint.constant = 89
+        }
+        else
+        {
+            self.inputTitleWidthConstraint.constant = 65
         }
         
+        UIView.animate(withDuration: Constants.UiConstants.AnimationDuration) {
+            self.setNeedsUpdateConstraints()
+        }
     }
 }
 
 extension DetailTableViewCell : ReusableView {
     
 }
+
+//MARK:- text field handling
+extension DetailTableViewCell: UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true;
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        valueChanged?(self.inputValue, textField.text ?? "")
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        valueChanged?(self.inputValue, textField.text ?? "")
+    }
+}
+

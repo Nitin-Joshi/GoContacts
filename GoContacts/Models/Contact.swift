@@ -9,15 +9,14 @@
 import Foundation
 
 public struct Contact {
-    let id: Int
+    var id: Int?
     var firstName, lastName, email, phoneNumber: String?
     var profilePic: String?
     var favourite: Bool
     var createdAt, updatedAt: String?
     var detailUrl: String?
     
-    init(id: Int, favourite:Bool) {
-        self.id = id
+    init(favourite:Bool) {
         self.favourite = favourite
     }
 }
@@ -36,3 +35,4 @@ extension Contact : Codable {
         case detailUrl = "url"
     }
 }
+

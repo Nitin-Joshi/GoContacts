@@ -32,8 +32,48 @@ class DetailsController {
         networkManager = NetworkManager()
     }
     
+    func SaveContactFavourite () {
+        let updatedContact = Contact(favourite: contactDetail.IsFavourite)
+        PublishData(updatedContact)
+    }
+    
     func SaveContactDetails () {
+        var updatedContact = Contact(favourite: contactDetail.IsFavourite)
         
+        if let changedFirstName = tempContactFirstName {
+            self.contactDetail.FirstName = changedFirstName
+            updatedContact.firstName = changedFirstName
+        }
+        
+        if let changedLastName = tempContactLastName {
+            self.contactDetail.LastName = changedLastName
+            updatedContact.lastName = changedLastName
+        }
+        if let changedPhone = tempContactPhone {
+            self.contactDetail.PhoneNumber = changedPhone
+            updatedContact.phoneNumber = changedPhone
+        }
+        if let changedEmail = tempContactEmail {
+            self.contactDetail.Email = changedEmail
+            updatedContact.email = changedEmail
+        }
+        
+        PublishData(updatedContact)
+    }
+    
+    private func PublishData(_ contact: Contact) {
+        do {
+            let jsonData = try JSONEncoder().encode(contact)
+            
+            var urlPath = self.contactDetail.DetailUrl
+            if (urlPath.isEmpty) {
+                urlPath = String("\(Constants.URLConstant.ContactsPath)/\(self.contactDetail.Id).json")
+            }
+            
+            networkManager.UpdateData(urlPath: urlPath, uploadData: jsonData)
+        } catch {
+            print("JSON error: \(error.localizedDescription)")
+        }
     }
     
     func ResetTempData () {

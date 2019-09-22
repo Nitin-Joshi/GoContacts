@@ -26,6 +26,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var favouriteIcon: UIImageView!
     @IBOutlet weak var inputAreaTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var inputTableView: UITableView!
+    @IBOutlet weak var cameraButton: UIButton!
     
     // privates
     private var leftBarItem: UIBarButtonItem!
@@ -42,11 +43,10 @@ class DetailViewController: UIViewController {
     
     // UI constants
     private let inputAreaTopConstraintDeltaForEdit:CGFloat = -140
-    private let animationDuration:TimeInterval = 1
     
     //input elements
-    private let displayElements: [InputValue] = [.Email, .Phone]
-    private let editElements: [InputValue] = [.FirstName, .LastName, .Email, .Phone]
+    private let displayElements: [InputValue] = [.Phone, .Email]
+    private let editElements: [InputValue] = [.FirstName, .LastName, .Phone, .Email]
 
     public var detailController: DetailsController!
 
@@ -74,6 +74,9 @@ class DetailViewController: UIViewController {
         contactName.textColor = Constants.Colors.TextColor
         
         contactName.text = detailController.contactDetail.Name
+        contactName.textColor = Constants.Colors.TextColor
+        contactName.font = UIFont.boldSystemFont(ofSize: 24)
+
         favouriteIcon.isHighlighted = detailController.contactDetail.IsFavourite
         
         self.navigationController?.navigationBar.tintColor = Constants.Colors.MainAppColor
@@ -96,6 +99,8 @@ class DetailViewController: UIViewController {
             inputAreaTopConstraint.constant = 0
             contactName.text = self.detailController.contactDetail.Name
 
+            cameraButton.isHidden = true
+            
         case .Edit:
             
             rightBarItem.title = "Done"
@@ -107,15 +112,24 @@ class DetailViewController: UIViewController {
 
             inputAreaTopConstraint.constant = inputAreaTopConstraintDeltaForEdit
             contactName.text = ""
+            
+            cameraButton.isHidden = false
+            
         }
         
         self.inputTableView.reloadData()
         
-        UIView.animate(withDuration: animationDuration) {
+        UIView.animate(withDuration: Constants.UiConstants.AnimationDuration) {
             self.view.layoutIfNeeded()
         }
     }
+    
+    @IBAction func cameraButtonTapped(_ sender: Any) {
+        
+    }
+    
 }
+
     // MARK: - Action selector function
 extension DetailViewController {
     @objc
@@ -129,11 +143,18 @@ extension DetailViewController {
     
     @objc
     func doneButtonTapped(_ sender: Any) {
-        detailPageMode = .Display
         
-        //TODO save user data
+        view.endEditing(true) // if keyboard is open, should take changes from editting before saving
+                
+        self.detailController.SaveContactDetails()
         
         DispatchQueue.main.async {
+            self.detailPageMode = .Display
+            self.isContactModifiedInEdit = false
+            
+            //reset temp data
+            self.detailController.ResetTempData()
+            
             self.flipDetailUI()
         }
     }
@@ -147,8 +168,10 @@ extension DetailViewController {
                 alertView.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: {(alert: UIAlertAction!) in
                     DispatchQueue.main.async {
                         self.detailPageMode = .Display
-
-                        //TODO delete temp edits from user
+                        self.isContactModifiedInEdit = false
+                        
+                        //reset temp data
+                        self.detailController.ResetTempData()
                         
                         self.flipDetailUI()
                     }
@@ -211,7 +234,10 @@ extension DetailViewController {
     func favButtonTapped (_ sender: Any) {
         favouriteIcon.isHighlighted = !favouriteIcon.isHighlighted
         self.detailController.contactDetail.IsFavourite = favouriteIcon.isHighlighted
+        self.detailController.SaveContactFavourite()
     }
+    
+    
 }
 
 // MARK:- input table view delegates
@@ -236,6 +262,22 @@ extension DetailViewController : UITableViewDataSource, UITableViewDelegate {
             cell.SetUi(userData: contact.Email, inputValue: element, inputType: .Email, isEditMode: isEditMode)
         case .Phone:
             cell.SetUi(userData: contact.PhoneNumber, inputValue: element, inputType: .Number, isEditMode: isEditMode)
+        }
+        
+        //bind value change in edit mode
+        cell.valueChanged = { inputValue, value in
+            switch inputValue {
+            case .FirstName:
+                self.detailController.tempContactFirstName = value
+            case .LastName:
+                self.detailController.tempContactLastName = value
+            case .Email:
+                self.detailController.tempContactEmail = value
+            case .Phone:
+                self.detailController.tempContactPhone = value
+            }
+
+            self.isContactModifiedInEdit = true
         }
     
         return cell

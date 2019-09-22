@@ -21,6 +21,9 @@ class Constants: NSObject {
         public static let ContactsEndPoint = "/contacts"
     }
     
+    public struct UiConstants {
+        public static let AnimationDuration: TimeInterval = 0.650
+    }
 }
 
 @objc protocol ControllerDelegate {

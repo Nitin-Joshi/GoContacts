@@ -111,6 +111,47 @@ public class NetworkManager {
         task.resume()
     }
     
+    func UpdateData (urlPath: String, uploadData: Data) {
+        let session = URLSession.shared
+        let url = URL(string: urlPath)!
+        
+        //create request with url
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        //upload json data
+        let task = session.uploadTask(with: request, from: uploadData) { data, response, error in
+            if let error = error {
+                print ("error: \(error)")
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                    print ("server error")
+                    return
+            }
+            
+            guard let mime = response.mimeType, mime == "application/json" else {
+                print("Wrong MIME type!")
+                return
+            }
+
+            let result = self.handleNetworkResponse(response)
+            switch(result) {
+            case .success :
+                if let data = data,
+                    let dataString = String(data: data, encoding: .utf8) {
+                    print ("data respone: \(dataString)")
+                }
+            case .failure(let networkFailureError) :
+                print(networkFailureError)
+            }
+        }
+        task.resume()
+
+    }
+    
     fileprivate func handleNetworkResponse(_ response: HTTPURLResponse) -> Result<String>{
         switch response.statusCode {
         case 200...299: return .success

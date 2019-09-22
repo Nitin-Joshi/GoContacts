@@ -18,7 +18,7 @@ class ContactsViewModel {
     
     public var Id: Int {
         get {
-            return self.contact.id
+            return self.contact.id!
         }
     }
     
