@@ -51,7 +51,7 @@ class ContactsViewController: UITableViewController {
 
     @objc
     func AddNewContact(_ sender: Any) {
-        self.performSegue(withIdentifier: "showDetail", sender: nil)
+        self.performSegue(withIdentifier: "showDetail", sender: "AddNewContact")
     }
 }
 
@@ -59,18 +59,8 @@ class ContactsViewController: UITableViewController {
 extension ContactsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+            if let senderValue = sender as? String, senderValue == "AddNewContact" {
                 
-                let contact = self.contactListController.contactList[indexPath.section][indexPath.row]
-                let detailsController = DetailsController(controller.self, contact: contact, isNewContact: false)
-                controller.detailController = detailsController
-                
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
-            }
-            else
-            {
                 //Add new contact
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 
@@ -81,7 +71,18 @@ extension ContactsViewController {
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
-
+                
+            }
+            else if let indexPath = tableView.indexPathForSelectedRow
+            {
+                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+                
+                let contact = self.contactListController.contactList[indexPath.section][indexPath.row]
+                let detailsController = DetailsController(controller.self, contact: contact, isNewContact: false)
+                controller.detailController = detailsController
+                
+                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+                controller.navigationItem.leftItemsSupplementBackButton = true
             }
         }
     }

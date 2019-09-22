@@ -54,11 +54,17 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        leftBarItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
+        guard detailController != nil else {
+            return
+        }
+        
+        if(UIDevice.current.userInterfaceIdiom == .phone) {
+            leftBarItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
+        }
         
         rightBarItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
         navigationItem.rightBarButtonItem = rightBarItem
-                
+
         let messageButtonGesture = UITapGestureRecognizer(target: self, action: #selector(messageButtonTapped(_:)))
         messageButtonView.addGestureRecognizer(messageButtonGesture)
         
@@ -82,13 +88,13 @@ class DetailViewController: UIViewController {
         
         self.navigationController?.navigationBar.tintColor = Constants.Colors.MainAppColor
         
-        SetDetailUIForDisplayMode()
+        SetDetailUIForDisplayMode(false)
     }
     
     /**
      Will flip the page ui for edit or normal display mode
  */
-    func SetDetailUIForDisplayMode () {
+    func SetDetailUIForDisplayMode (_ animate: Bool) {
         switch detailPageMode {
         case .Display:
 
@@ -121,7 +127,7 @@ class DetailViewController: UIViewController {
         
         self.inputTableView.reloadData()
         
-        UIView.animate(withDuration: Constants.UiConstants.AnimationDuration) {
+        UIView.animate(withDuration:animate ? Constants.UiConstants.AnimationDuration:0) {
             self.view.layoutIfNeeded()
         }
     }
@@ -169,7 +175,7 @@ extension DetailViewController {
         detailPageMode = .Edit
         
         DispatchQueue.main.async {
-            self.SetDetailUIForDisplayMode()
+            self.SetDetailUIForDisplayMode(true)
         }
     }
     
@@ -185,15 +191,20 @@ extension DetailViewController {
         self.detailController.SaveContactDetails()
         
         DispatchQueue.main.async {
-            //TODO move to master page
-
-            self.detailPageMode = .Display
-            self.isContactModifiedInEdit = false
-            
-            //reset temp data
-            self.detailController.ResetTempData()
-            
-            self.SetDetailUIForDisplayMode()
+            if(self.detailController.isNewContact)
+            {
+                self.navigationController?.navigationController?.popToRootViewController(animated: true)
+            }
+            else
+            {
+                self.detailPageMode = .Display
+                self.isContactModifiedInEdit = false
+                
+                //reset temp data
+                self.detailController.ResetTempData()
+                
+                self.SetDetailUIForDisplayMode(true)
+            }
         }
     }
     
@@ -205,15 +216,20 @@ extension DetailViewController {
                 
                 alertView.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: {(alert: UIAlertAction!) in
                     DispatchQueue.main.async {
-                        //TODO move to master page
-
-                        self.detailPageMode = .Display
-                        self.isContactModifiedInEdit = false
-                        
-                        //reset temp data
-                        self.detailController.ResetTempData()
-                        
-                        self.SetDetailUIForDisplayMode()
+                        if(self.detailController.isNewContact)
+                        {
+                            self.navigationController?.navigationController?.popToRootViewController(animated: true)
+                        }
+                        else
+                        {
+                            self.detailPageMode = .Display
+                            self.isContactModifiedInEdit = false
+                            
+                            //reset temp data
+                            self.detailController.ResetTempData()
+                            
+                            self.SetDetailUIForDisplayMode(true)
+                        }
                     }
                 }))
                 
@@ -232,9 +248,15 @@ extension DetailViewController {
             }
         } else {
             DispatchQueue.main.async {
-                //TODO move to master page
-                self.detailPageMode = .Display
-                self.SetDetailUIForDisplayMode()
+                if(self.detailController.isNewContact)
+                {
+                    self.navigationController?.navigationController?.popToRootViewController(animated: true)
+                }
+                else
+                {
+                    self.detailPageMode = .Display
+                    self.SetDetailUIForDisplayMode(true)
+                }
             }
         }
     }
@@ -336,6 +358,9 @@ extension DetailViewController {
 // MARK:- input table view delegates
 extension DetailViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard detailController != nil else {
+            return 0
+        }
         return (detailPageMode == .Edit || detailPageMode == .Add) ? 4:2
     }
     
