@@ -12,9 +12,14 @@ public struct Contact {
     let id: Int
     var firstName, lastName, email, phoneNumber: String?
     var profilePic: String?
-    var favorite: Bool
+    var favourite: Bool
     var createdAt, updatedAt: String?
     var detailUrl: String?
+    
+    init(id: Int, favourite:Bool) {
+        self.id = id
+        self.favourite = favourite
+    }
 }
 
 extension Contact : Codable {
@@ -25,7 +30,7 @@ extension Contact : Codable {
         case email
         case phoneNumber = "phone_number"
         case profilePic = "profile_pic"
-        case favorite
+        case favourite = "favorite"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
         case detailUrl = "url"

@@ -31,10 +31,10 @@ class DetailViewController: UIViewController {
     private var leftBarItem: UIBarButtonItem!
     private var rightBarItem: UIBarButtonItem! // can be reused for different actions
     private var detailPageMode: DetailMode = .Display
-    private var areContactDetailsChanged : Bool = false {
+    private var isContactModifiedInEdit : Bool = false {
         didSet {
             //bind bar button with change
-            if(areContactDetailsChanged) {
+            if(isContactModifiedInEdit) {
                 rightBarItem.isEnabled = true
             }
         }
@@ -140,7 +140,7 @@ extension DetailViewController {
     
     @objc
     func cancelButtonTapped (_ sender: Any) {
-        if (areContactDetailsChanged) {
+        if (isContactModifiedInEdit) {
             DispatchQueue.main.async {
                 let alertView = UIAlertController(title: nil, message: "You will lose your edits!", preferredStyle: .actionSheet)
                 

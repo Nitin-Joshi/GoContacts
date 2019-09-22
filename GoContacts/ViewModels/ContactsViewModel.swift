@@ -48,10 +48,10 @@ class ContactsViewModel {
     
     public var IsFavourite: Bool {
         set {
-            self.contact.favorite = newValue
+            self.contact.favourite = newValue
         }
         get {
-            return self.contact.favorite
+            return self.contact.favourite
         }
     }
     
