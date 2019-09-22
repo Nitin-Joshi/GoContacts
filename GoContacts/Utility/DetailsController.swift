@@ -17,6 +17,11 @@ class DetailsController {
     var contactDetail: ContactsViewModel
     let networkManager: NetworkManager!
 
+    var tempContactFirstName: String?
+    var tempContactLastName: String?
+    var tempContactEmail: String?
+    var tempContactPhone: String?
+
     weak var controllerDelegate: ControllerDelegate!
 
     init(_ controllerDelegate: ControllerDelegate, contact: ContactsViewModel) {
@@ -27,7 +32,14 @@ class DetailsController {
         networkManager = NetworkManager()
     }
     
-    func SaveContactDetails (newContactDetail: ContactsViewModel) {
+    func SaveContactDetails () {
         
+    }
+    
+    func ResetTempData () {
+        tempContactFirstName = nil
+        tempContactLastName = nil
+        tempContactEmail = nil
+        tempContactPhone = nil
     }
 }
