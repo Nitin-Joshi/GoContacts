@@ -29,6 +29,9 @@ class ContactsViewModel {
     }
     
     public var IsFavourite: Bool {
+        set {
+            self.contact.favorite = newValue
+        }
         get {
             return self.contact.favorite
         }

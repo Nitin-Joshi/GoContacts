@@ -25,6 +25,11 @@ class ContactTableViewCell: UITableViewCell {
         public static let Hide: CGFloat = -24
     }
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
     override func prepareForReuse() {
         self.favContactIcon!.image = nil
     }

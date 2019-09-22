@@ -61,7 +61,8 @@ extension ContactsViewController {
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 
                 let contact = self.contactListController.contactList[indexPath.section][indexPath.row]
-                controller.contactDetail = contact
+                let detailsController = DetailsController(controller.self, contact: contact)
+                controller.detailController = detailsController
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
@@ -72,6 +73,7 @@ extension ContactsViewController {
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
+                
                 let contact = contactListController!.contactList[indexPath.section][indexPath.row]
                 contactListController.GetContactDetail(contactId: contact.Id, indexPath: indexPath)
                 ShowSpinner()
@@ -129,7 +131,7 @@ extension ContactsViewController {
 }
 
 // MARK: - Helper controller delegates
-extension ContactsViewController: ControllerDelegate {
+extension ContactsViewController: ContactListDelegate {
     
     func ShowAlertMessage(message: String) {
         DispatchQueue.main.async {

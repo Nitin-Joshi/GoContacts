@@ -9,9 +9,7 @@
 import Foundation
 import UIKit
 
- @objc protocol ControllerDelegate {
-    @objc optional func ShowAlertMessage (message: String)
-    @objc optional func ReloadTableView ()
+@objc protocol ContactListDelegate: ControllerDelegate {
     @objc optional func NavigateToDetailPageWithContact (contactId: Int, indexPath: IndexPath)
 }
 
@@ -20,11 +18,11 @@ class ContactListController {
     var sectionList: [String] = [String]()
     var contactList: [[ContactsViewModel]] = [[ContactsViewModel]]()
     
-    weak var controllerDelegate: ControllerDelegate!
+    weak var controllerDelegate: ContactListDelegate!
     let localeCurrentCollation: UILocalizedIndexedCollation
     let networkManager: NetworkManager!
 
-    init(_ controllerDelegate:ControllerDelegate, _ collation: UILocalizedIndexedCollation) {
+    init(_ controllerDelegate:ContactListDelegate, _ collation: UILocalizedIndexedCollation) {
         self.controllerDelegate = controllerDelegate
         self.localeCurrentCollation = collation
         
@@ -41,7 +39,7 @@ class ContactListController {
         networkManager!.GetArrayData(urlPath: urlPath, decodingType: Contact.self) { (contacts, error) in
             if(error != nil)
             {
-                self.controllerDelegate!.ShowAlertMessage?(message: error!)
+                self.controllerDelegate!.ShowAlertMessage?(title:"Error!", message: error!)
                 return
             }
 
@@ -76,7 +74,7 @@ class ContactListController {
         networkManager!.GetData(urlPath: urlPath, decodingType: Contact.self) { (contact, error) in
             if(error != nil)
             {
-                self.controllerDelegate!.ShowAlertMessage?(message: error!)
+                self.controllerDelegate!.ShowAlertMessage?(title:"Error!", message: error!)
                 return
             }
             

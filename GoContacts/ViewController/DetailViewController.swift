@@ -27,12 +27,11 @@ class DetailViewController: UIViewController {
     // private
     private var leftBarItem: UIBarButtonItem!
     private var rightBarItem: UIBarButtonItem!
-    
-    public var contactDetail: ContactsViewModel!
-    
     private var detailPageMode: DetailMode = .Display
     private var areContactDetailsChanged : Bool = false
     
+    public var detailController: DetailsController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,8 +55,8 @@ class DetailViewController: UIViewController {
         contactName.font = UIFont.boldSystemFont(ofSize: 24)
         contactName.textColor = Constants.Colors.TextColor
         
-        contactName.text = contactDetail!.Name
-        favouriteIcon.isHighlighted = contactDetail!.IsFavourite
+        contactName.text = detailController.contactDetail.Name
+        favouriteIcon.isHighlighted = detailController.contactDetail.IsFavourite
         
         self.navigationController?.navigationBar.tintColor = Constants.Colors.MainAppColor
     }
@@ -75,6 +74,8 @@ class DetailViewController: UIViewController {
             navigationItem.leftBarButtonItem = nil
             navigationItem.setHidesBackButton(false, animated: true)
 
+            contactName.text = self.detailController.contactDetail.Name
+
         case .Edit:
             
             rightBarItem.title = "Done"
@@ -85,8 +86,9 @@ class DetailViewController: UIViewController {
 
         }
     }
-    
+}
     // MARK: - Action selector function
+extension DetailViewController {
     @objc
     func editButtonTapped (_ sender: Any) {
         detailPageMode = .Edit
@@ -152,7 +154,26 @@ class DetailViewController: UIViewController {
     
     @objc
     func favButtonTapped (_ sender: Any) {
-        
+        self.detailController.contactDetail.IsFavourite = favouriteIcon.isHighlighted
+    }
+}
     }
 }
 
+// MARK:- controller delegate
+extension DetailViewController: ControllerDelegate{
+    func ShowAlertMessage(title:String, message: String) {
+        DispatchQueue.main.async {
+            let alertView = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertView.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            self.present(alertView, animated:true)
+        }
+    }
+    
+    func ReloadTableView() {
+        DispatchQueue.main.async {
+            
+            self.inputTableView.reloadData()
+        }
+    }
+}

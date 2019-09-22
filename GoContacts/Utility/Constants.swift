@@ -22,3 +22,8 @@ class Constants: NSObject {
     }
     
 }
+
+@objc protocol ControllerDelegate {
+    @objc optional func ShowAlertMessage (title:String, message: String)
+    @objc optional func ReloadTableView ()
+}
