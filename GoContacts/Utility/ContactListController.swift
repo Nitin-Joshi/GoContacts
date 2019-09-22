@@ -66,7 +66,7 @@ class ContactListController {
      */
     func GetContactDetail (contactId: Int, indexPath: IndexPath) {
         
-        var urlPath = self.contactList[indexPath.section][indexPath.row].DetailUrl
+        var urlPath = self.contactList[indexPath.section][indexPath.row].DetailUrl ?? ""
         if (urlPath.isEmpty) {
            urlPath = String("\(Constants.URLConstant.ContactsPath)/\(contactId).json")
         }

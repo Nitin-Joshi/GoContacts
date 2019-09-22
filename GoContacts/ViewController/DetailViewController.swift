@@ -12,6 +12,7 @@ import MessageUI
 enum DetailMode {
     case Edit
     case Display
+    case Add
 }
 
 class DetailViewController: UIViewController {
@@ -80,12 +81,14 @@ class DetailViewController: UIViewController {
         favouriteIcon.isHighlighted = detailController.contactDetail.IsFavourite
         
         self.navigationController?.navigationBar.tintColor = Constants.Colors.MainAppColor
+        
+        SetDetailUIForDisplayMode()
     }
     
     /**
      Will flip the page ui for edit or normal display mode
  */
-    func flipDetailUI () {
+    func SetDetailUIForDisplayMode () {
         switch detailPageMode {
         case .Display:
 
@@ -101,8 +104,8 @@ class DetailViewController: UIViewController {
 
             cameraButton.isHidden = true
             
-        case .Edit:
-            
+        case .Edit, .Add:
+
             rightBarItem.title = "Done"
             rightBarItem.isEnabled = false
             rightBarItem.action = #selector(doneButtonTapped(_:))
@@ -114,7 +117,6 @@ class DetailViewController: UIViewController {
             contactName.text = ""
             
             cameraButton.isHidden = false
-            
         }
         
         self.inputTableView.reloadData()
@@ -124,8 +126,38 @@ class DetailViewController: UIViewController {
         }
     }
     
+    func prepareViewForAdd () {
+        detailPageMode = .Add
+
+    }
+    
     @IBAction func cameraButtonTapped(_ sender: Any) {
+        let alert = UIAlertController(title: "Choose Image", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { _ in
+            DispatchQueue.main.async {
+                self.openCameraPicker()
+            }
+        }))
         
+        alert.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { _ in
+            DispatchQueue.main.async {
+                self.openGalleryPicker()
+            }
+        }))
+        
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil))
+
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            alert.popoverPresentationController?.sourceView = sender as? UIView
+            alert.popoverPresentationController?.sourceRect = (sender as AnyObject).bounds
+            alert.popoverPresentationController?.permittedArrowDirections = .up
+        default:
+            break
+        }
+
+        self.present(alert, animated: true, completion: nil)
+
     }
     
 }
@@ -137,7 +169,7 @@ extension DetailViewController {
         detailPageMode = .Edit
         
         DispatchQueue.main.async {
-            self.flipDetailUI()
+            self.SetDetailUIForDisplayMode()
         }
     }
     
@@ -145,17 +177,23 @@ extension DetailViewController {
     func doneButtonTapped(_ sender: Any) {
         
         view.endEditing(true) // if keyboard is open, should take changes from editting before saving
-                
+        
+        guard ValidateUserInput() else {
+            return
+        }
+        
         self.detailController.SaveContactDetails()
         
         DispatchQueue.main.async {
+            //TODO move to master page
+
             self.detailPageMode = .Display
             self.isContactModifiedInEdit = false
             
             //reset temp data
             self.detailController.ResetTempData()
             
-            self.flipDetailUI()
+            self.SetDetailUIForDisplayMode()
         }
     }
     
@@ -167,24 +205,36 @@ extension DetailViewController {
                 
                 alertView.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: {(alert: UIAlertAction!) in
                     DispatchQueue.main.async {
+                        //TODO move to master page
+
                         self.detailPageMode = .Display
                         self.isContactModifiedInEdit = false
                         
                         //reset temp data
                         self.detailController.ResetTempData()
                         
-                        self.flipDetailUI()
+                        self.SetDetailUIForDisplayMode()
                     }
                 }))
                 
                 alertView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 
+                switch UIDevice.current.userInterfaceIdiom {
+                case .pad:
+                    alertView.popoverPresentationController?.sourceView = sender as? UIView
+                    alertView.popoverPresentationController?.sourceRect = (sender as AnyObject).bounds
+                    alertView.popoverPresentationController?.permittedArrowDirections = .up
+                default:
+                    break
+                }
+
                 self.present(alertView, animated:true)
             }
         } else {
             DispatchQueue.main.async {
+                //TODO move to master page
                 self.detailPageMode = .Display
-                self.flipDetailUI()
+                self.SetDetailUIForDisplayMode()
             }
         }
     }
@@ -237,31 +287,74 @@ extension DetailViewController {
         self.detailController.SaveContactFavourite()
     }
     
+    func ValidateUserInput () -> Bool {
+        
+        if self.detailController.isNewContact == true || self.detailController.tempContactFirstName != nil {
+            guard let first = self.detailController.tempContactFirstName, first.count >= 2 else {
+                ShowAlertMessage(title: "Error", message: "First name is too short! (minimium 2 characters)")
+                return false
+            }
+        }
+        
+        if self.detailController.isNewContact == true || self.detailController.tempContactLastName != nil {
+            guard let last = self.detailController.tempContactLastName, last.count >= 2 else {
+                ShowAlertMessage(title: "Error", message: "Last name is too short! (minimium 2 characters)")
+                return false
+            }
+        }
+        
+        if self.detailController.isNewContact == true || self.detailController.tempContactPhone != nil {
+            guard let phone = self.detailController.tempContactPhone, phone.count >= 10 else {
+                ShowAlertMessage(title: "Error", message: "Phone number is invalid! ")
+                return false
+            }
+        }
+        
+        if self.detailController.isNewContact == true || self.detailController.tempContactEmail != nil {
+            guard let email = self.detailController.tempContactEmail, isValid(email) else {
+                ShowAlertMessage(title: "Error", message: "Email is invalid! ")
+                return false
+            }
+        }
+        
+        return true
+    }
     
+    func isValid(_ email: String) -> Bool {
+        let emailRegEx = "(?:[a-zA-Z0-9!#$%\\&‘*+/=?\\^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%\\&'*+/=?\\^_`{|}" + "~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\" +
+        "x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-" +
+        "z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5" +
+        "]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-" +
+        "9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21" +
+        "-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES[c] %@", emailRegEx)
+        return emailTest.evaluate(with: email)
+    }
 }
 
 // MARK:- input table view delegates
 extension DetailViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (detailPageMode == .Edit) ? 4:2
+        return (detailPageMode == .Edit || detailPageMode == .Add) ? 4:2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.defaultReuseIdentifier, for: indexPath) as! DetailTableViewCell
         
-        let isEditMode = (detailPageMode == .Edit)
+        let isEditMode = (detailPageMode == .Edit || detailPageMode == .Add)
         let element = isEditMode ? editElements[indexPath.row] : displayElements[indexPath.row]
         
         let contact = self.detailController.contactDetail
         switch element {
         case .FirstName:
-            cell.SetUi(userData: contact.FirstName, inputValue: element, inputType: .Text, isEditMode: isEditMode)
+            cell.SetUi(userData: contact.FirstName ?? "", inputValue: element, inputType: .Text, isEditMode: isEditMode)
         case .LastName:
-            cell.SetUi(userData: contact.LastName, inputValue: element, inputType: .Text, isEditMode: isEditMode)
+            cell.SetUi(userData: contact.LastName ?? "", inputValue: element, inputType: .Text, isEditMode: isEditMode)
         case .Email:
-            cell.SetUi(userData: contact.Email, inputValue: element, inputType: .Email, isEditMode: isEditMode)
+            cell.SetUi(userData: contact.Email ?? "", inputValue: element, inputType: .Email, isEditMode: isEditMode)
         case .Phone:
-            cell.SetUi(userData: contact.PhoneNumber, inputValue: element, inputType: .Number, isEditMode: isEditMode)
+            cell.SetUi(userData: contact.PhoneNumber ?? "", inputValue: element, inputType: .Number, isEditMode: isEditMode)
         }
         
         //bind value change in edit mode
@@ -284,7 +377,11 @@ extension DetailViewController : UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let element = (detailPageMode == .Edit) ? editElements[indexPath.row] : displayElements[indexPath.row]
+        guard detailPageMode == .Display else {
+            return
+        }
+        
+        let element =  displayElements[indexPath.row]
         
         switch element {
         case .Email:
@@ -347,3 +444,48 @@ extension DetailViewController: MFMessageComposeViewControllerDelegate {
         self.dismiss(animated: true, completion: nil)
     }
 }
+
+// MARK:- handle image picker
+extension DetailViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func openCameraPicker()
+    {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            let alert  = UIAlertController(title: "Warning", message: "You don't have camera", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            return
+        }
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .camera
+        imagePicker.allowsEditing = true
+        self.present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func openGalleryPicker()
+    {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.allowsEditing = true
+        self.present(imagePicker, animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let userImage = info[.editedImage] as? UIImage {
+            
+            //apply edited image directly to uiimageview
+            profileImageView.image = userImage
+        }
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+

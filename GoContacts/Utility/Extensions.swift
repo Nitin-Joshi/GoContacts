@@ -106,9 +106,10 @@ extension UILocalizedIndexedCollation {
         // Sorting the array of each sections
         var sectionTitles = [String]()
         var sections = [AnyObject]()
-        for index in 0 ..< unsortedSections.count { if unsortedSections[index].count > 0 {
-            sectionTitles.append(self.sectionTitles[index])
-            sections.append(self.sortedArray(from: unsortedSections[index], collationStringSelector: collationStringSelector) as AnyObject)
+        for index in 0 ..< unsortedSections.count {
+            if unsortedSections[index].count > 0 {
+                sectionTitles.append(self.sectionTitles[index])
+                sections.append(self.sortedArray(from: unsortedSections[index], collationStringSelector: collationStringSelector) as AnyObject)
             }
         }
         

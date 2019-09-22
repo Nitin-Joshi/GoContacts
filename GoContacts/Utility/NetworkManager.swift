@@ -111,17 +111,33 @@ public class NetworkManager {
         task.resume()
     }
     
+    func CreateData (urlPath: String, uploadData: Data) {
+        let url = URL(string: urlPath)!
+        
+        //create request with url
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        UploadData(request: request, data: uploadData)
+    }
+    
     func UpdateData (urlPath: String, uploadData: Data) {
-        let session = URLSession.shared
         let url = URL(string: urlPath)!
         
         //create request with url
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        UploadData(request: request, data: uploadData)
+    }
+
+    private func UploadData (request: URLRequest, data: Data) {
+        let session = URLSession.shared
 
         //upload json data
-        let task = session.uploadTask(with: request, from: uploadData) { data, response, error in
+        let task = session.uploadTask(with: request, from: data) { data, response, error in
             if let error = error {
                 print ("error: \(error)")
                 return
@@ -145,7 +161,8 @@ public class NetworkManager {
                     print ("data respone: \(dataString)")
                 }
             case .failure(let networkFailureError) :
-                print(networkFailureError)
+                print(networkFailureError+" : ")
+                print("\(response.statusCode) : \(response.description)")
             }
         }
         task.resume()

@@ -17,7 +17,7 @@ class GoContactsTests: XCTestCase {
     override func setUp() {
         super.setUp()
         networkManager = NetworkManager()
-        viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactsViewController") as? ContactsViewController
+        viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactsViewController") as? (ContactsViewController)
 
     }
 
@@ -87,8 +87,10 @@ class GoContactsTests: XCTestCase {
         
         viewController.contactListController = ContactListController(viewController.self, UILocalizedIndexedCollation.current())
         
-        let mockContactArray = [ContactsViewModel(contact: Contact(id: 1, firstName: "apple", lastName: nil, email: nil, phoneNumber: nil, profilePic: nil, favorite: false, createdAt: nil, updatedAt: nil, detailUrl: nil)),
-                                ContactsViewModel(contact: Contact(id: 1, firstName: "ball", lastName: nil, email: nil, phoneNumber: nil, profilePic: nil, favorite: false, createdAt: nil, updatedAt: nil, detailUrl: nil))]
+        let mockContactArray = [ContactsViewModel(contact: Contact(favourite: false)),
+                                ContactsViewModel(contact: Contact(favourite: false))]
+        mockContactArray[0].FirstName = "Apple"
+        mockContactArray[1].FirstName = "Bell"
         
         let selector = #selector(getter: CollationIndexable.CollationSelectorString)
         let (contactArray, sectionList) = UILocalizedIndexedCollation.current().splitAndSortArray(array: mockContactArray as [AnyObject], collationStringSelector: selector)

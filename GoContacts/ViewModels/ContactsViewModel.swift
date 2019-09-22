@@ -22,18 +22,18 @@ class ContactsViewModel {
         }
     }
     
-    public var FirstName: String {
+    public var FirstName: String? {
         get {
-            return self.contact.firstName!
+            return self.contact.firstName
         }
         set {
             self.contact.firstName = newValue
         }
     }
     
-    public var LastName: String {
+    public var LastName: String? {
         get {
-            return self.contact.lastName!
+            return self.contact.lastName
         }
         set {
             self.contact.lastName = newValue
@@ -42,7 +42,11 @@ class ContactsViewModel {
 
     public var Name: String {
         get {
-            return String("\(FirstName) \(LastName)")
+            if let first = self.contact.firstName, let last = self.contact.lastName {
+                return String("\(first) \(last)")
+            }
+            
+            return ""
         }
     }
     
@@ -55,27 +59,27 @@ class ContactsViewModel {
         }
     }
     
-    public var Email: String! {
+    public var Email: String? {
         get {
-            return self.contact.email!
+            return self.contact.email
         }
         set(email) {
             self.contact.email = email
         }
     }
     
-    public var PhoneNumber: String! {
+    public var PhoneNumber: String? {
         get {
-            return self.contact.phoneNumber!
+            return self.contact.phoneNumber
         }
         set(phonenumber) {
             self.contact.phoneNumber = phonenumber
         }
     }
     
-    public var DetailUrl: String {
+    public var DetailUrl: String? {
         get {
-            return self.contact.detailUrl!
+            return self.contact.detailUrl
         }
     }
     

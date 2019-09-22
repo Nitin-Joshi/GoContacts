@@ -23,18 +23,21 @@ class DetailsController {
     var tempContactPhone: String?
 
     weak var controllerDelegate: ControllerDelegate!
+    
+    var isNewContact:Bool = false
 
-    init(_ controllerDelegate: ControllerDelegate, contact: ContactsViewModel) {
+    init(_ controllerDelegate: ControllerDelegate, contact: ContactsViewModel, isNewContact:Bool) {
         self.controllerDelegate = controllerDelegate
         
         self.contactDetail = contact
+        self.isNewContact = isNewContact
         
         networkManager = NetworkManager()
     }
     
     func SaveContactFavourite () {
         let updatedContact = Contact(favourite: contactDetail.IsFavourite)
-        PublishData(updatedContact)
+        PublishData(updatedContact, isNewContact: isNewContact)
     }
     
     func SaveContactDetails () {
@@ -58,19 +61,27 @@ class DetailsController {
             updatedContact.email = changedEmail
         }
         
-        PublishData(updatedContact)
+        PublishData(updatedContact, isNewContact: isNewContact)
     }
     
-    private func PublishData(_ contact: Contact) {
+    private func PublishData(_ contact: Contact, isNewContact: Bool) {
         do {
             let jsonData = try JSONEncoder().encode(contact)
-            
-            var urlPath = self.contactDetail.DetailUrl
-            if (urlPath.isEmpty) {
-                urlPath = String("\(Constants.URLConstant.ContactsPath)/\(self.contactDetail.Id).json")
+            print(String(data: jsonData, encoding: .utf8))
+            if(isNewContact)
+            {
+                let urlPath = String("\(Constants.URLConstant.ContactsPath).json")
+                networkManager.CreateData(urlPath: urlPath, uploadData: jsonData)
             }
-            
-            networkManager.UpdateData(urlPath: urlPath, uploadData: jsonData)
+            else
+            {
+                var urlPath = self.contactDetail.DetailUrl ?? ""
+                if (urlPath.isEmpty) {
+                    urlPath = String("\(Constants.URLConstant.ContactsPath)/\(self.contactDetail.Id).json")
+                }
+                
+                networkManager.UpdateData(urlPath: urlPath, uploadData: jsonData)
+            }
         } catch {
             print("JSON error: \(error.localizedDescription)")
         }
