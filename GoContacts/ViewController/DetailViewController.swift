@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MessageUI
 
 enum DetailMode {
     case Edit
@@ -23,13 +24,30 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var emailButtonView: UIView!
     @IBOutlet weak var favButtonView: UIView!
     @IBOutlet weak var favouriteIcon: UIImageView!
+    @IBOutlet weak var inputAreaTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var inputTableView: UITableView!
     
-    // private
+    // privates
     private var leftBarItem: UIBarButtonItem!
-    private var rightBarItem: UIBarButtonItem!
+    private var rightBarItem: UIBarButtonItem! // can be reused for different actions
     private var detailPageMode: DetailMode = .Display
-    private var areContactDetailsChanged : Bool = false
+    private var areContactDetailsChanged : Bool = false {
+        didSet {
+            //bind bar button with change
+            if(areContactDetailsChanged) {
+                rightBarItem.isEnabled = true
+            }
+        }
+    }
     
+    // UI constants
+    private let inputAreaTopConstraintDeltaForEdit:CGFloat = -140
+    private let animationDuration:TimeInterval = 1
+    
+    //input elements
+    private let displayElements: [InputValue] = [.Email, .Phone]
+    private let editElements: [InputValue] = [.FirstName, .LastName, .Email, .Phone]
+
     public var detailController: DetailsController!
 
     override func viewDidLoad() {
@@ -69,21 +87,32 @@ class DetailViewController: UIViewController {
         case .Display:
 
             rightBarItem.title = "Edit"
+            rightBarItem.isEnabled = true
             rightBarItem.action = #selector(editButtonTapped(_:))
             
             navigationItem.leftBarButtonItem = nil
             navigationItem.setHidesBackButton(false, animated: true)
 
+            inputAreaTopConstraint.constant = 0
             contactName.text = self.detailController.contactDetail.Name
 
         case .Edit:
             
             rightBarItem.title = "Done"
+            rightBarItem.isEnabled = false
             rightBarItem.action = #selector(doneButtonTapped(_:))
 
             navigationItem.setHidesBackButton(true, animated: true)
             navigationItem.setLeftBarButton(leftBarItem, animated: true)
 
+            inputAreaTopConstraint.constant = inputAreaTopConstraintDeltaForEdit
+            contactName.text = ""
+        }
+        
+        self.inputTableView.reloadData()
+        
+        UIView.animate(withDuration: animationDuration) {
+            self.view.layoutIfNeeded()
         }
     }
 }
@@ -139,24 +168,95 @@ extension DetailViewController {
     
     @objc
     func messageButtonTapped (_ sender: Any) {
-        
+        if let phoneNumber = self.detailController.contactDetail.PhoneNumber, MFMessageComposeViewController.canSendText() {
+            let controller = MFMessageComposeViewController()
+            controller.messageComposeDelegate = self
+            controller.recipients = [phoneNumber]
+            
+            self.present(controller, animated: true, completion: nil)
+        }
+        else
+        {
+            ShowAlertMessage(title: "Message", message: "Not able to send message!")
+        }
     }
     
     @objc
     func callButtonTapped (_ sender: Any) {
-        
+        if let phoneNumber = self.detailController.contactDetail.PhoneNumber, let numberUrl = URL(string: "tel://" + phoneNumber) {
+            UIApplication.shared.open(numberUrl, options: [:], completionHandler: nil)
+        }
+        else
+        {
+            ShowAlertMessage(title: "Call", message: "Not able to call!")
+        }
     }
     
     @objc
     func emailButtonTapped (_ sender: Any) {
-        
+        if let email = self.detailController.contactDetail.Email, MFMailComposeViewController.canSendMail() {
+            let composePicker = MFMailComposeViewController()
+            composePicker.mailComposeDelegate = self
+            composePicker.setToRecipients([email])
+            
+            self.present(composePicker, animated: true, completion: nil)
+        }
+        else
+        {
+            ShowAlertMessage(title: "Email", message: "Email not setup for this device!!")
+        }
     }
     
     @objc
     func favButtonTapped (_ sender: Any) {
+        favouriteIcon.isHighlighted = !favouriteIcon.isHighlighted
         self.detailController.contactDetail.IsFavourite = favouriteIcon.isHighlighted
     }
 }
+
+// MARK:- input table view delegates
+extension DetailViewController : UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (detailPageMode == .Edit) ? 4:2
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.defaultReuseIdentifier, for: indexPath) as! DetailTableViewCell
+        
+        let isEditMode = (detailPageMode == .Edit)
+        let element = isEditMode ? editElements[indexPath.row] : displayElements[indexPath.row]
+        
+        let contact = self.detailController.contactDetail
+        switch element {
+        case .FirstName:
+            cell.SetUi(userData: contact.FirstName, inputValue: element, inputType: .Text, isEditMode: isEditMode)
+        case .LastName:
+            cell.SetUi(userData: contact.LastName, inputValue: element, inputType: .Text, isEditMode: isEditMode)
+        case .Email:
+            cell.SetUi(userData: contact.Email, inputValue: element, inputType: .Email, isEditMode: isEditMode)
+        case .Phone:
+            cell.SetUi(userData: contact.PhoneNumber, inputValue: element, inputType: .Number, isEditMode: isEditMode)
+        }
+    
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let element = (detailPageMode == .Edit) ? editElements[indexPath.row] : displayElements[indexPath.row]
+        
+        switch element {
+        case .Email:
+            emailButtonTapped(self)
+        case .Phone:
+            callButtonTapped(self)
+        default:
+            break
+        }
+
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
     }
 }
 
@@ -175,5 +275,33 @@ extension DetailViewController: ControllerDelegate{
             
             self.inputTableView.reloadData()
         }
+    }
+}
+
+//MARK:- mail handling
+extension DetailViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+            switch result {
+            case .cancelled:
+                print("Mail cancelled")
+            case .saved:
+                print("Mail saved")
+            case .sent:
+                print("Mail sent")
+            case .failed:
+                break
+            @unknown default:
+                break
+        }
+            
+            self.dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK:- message handling
+extension DetailViewController: MFMessageComposeViewControllerDelegate {
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        //... handle sms screen actions
+        self.dismiss(animated: true, completion: nil)
     }
 }

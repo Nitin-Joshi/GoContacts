@@ -21,10 +21,28 @@ class ContactsViewModel {
             return self.contact.id
         }
     }
+    
+    public var FirstName: String {
+        get {
+            return self.contact.firstName!
+        }
+        set {
+            self.contact.firstName = newValue
+        }
+    }
+    
+    public var LastName: String {
+        get {
+            return self.contact.lastName!
+        }
+        set {
+            self.contact.lastName = newValue
+        }
+    }
 
     public var Name: String {
         get {
-            return String("\(self.contact.firstName!) \(self.contact.lastName!)")
+            return String("\(FirstName) \(LastName)")
         }
     }
     
@@ -37,7 +55,7 @@ class ContactsViewModel {
         }
     }
     
-    public var Email: String {
+    public var Email: String! {
         get {
             return self.contact.email!
         }
@@ -46,7 +64,7 @@ class ContactsViewModel {
         }
     }
     
-    public var PhoneNumber: String {
+    public var PhoneNumber: String! {
         get {
             return self.contact.phoneNumber!
         }

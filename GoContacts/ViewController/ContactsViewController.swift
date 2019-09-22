@@ -45,6 +45,8 @@ class ContactsViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
+        
+        self.tableView.reloadData()
     }
 
     @objc

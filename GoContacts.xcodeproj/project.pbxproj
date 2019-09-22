@@ -24,6 +24,7 @@
 		930FD99E23352DAD0048FAEE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD99D23352DAD0048FAEE /* NetworkManager.swift */; };
 		930FD9A423354F200048FAEE /* ContactListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9A323354F200048FAEE /* ContactListController.swift */; };
 		930FD9A623360DD20048FAEE /* ColorGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FD9A523360DD20048FAEE /* ColorGradientView.swift */; };
+		93BB39EE233746EE007E8138 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BB39ED233746EE007E8138 /* DetailTableViewCell.swift */; };
 		93BB39F0233785DD007E8138 /* DetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BB39EF233785DD007E8138 /* DetailsController.swift */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		930FD99D23352DAD0048FAEE /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		930FD9A323354F200048FAEE /* ContactListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListController.swift; sourceTree = "<group>"; };
 		930FD9A523360DD20048FAEE /* ColorGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorGradientView.swift; sourceTree = "<group>"; };
+		93BB39ED233746EE007E8138 /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		93BB39EF233785DD007E8138 /* DetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +194,7 @@
 				930FD97A2333C6E50048FAEE /* LaunchScreen.storyboard */,
 				930FD97C2333C6E50048FAEE /* Main.storyboard */,
 				930FD9942334135A0048FAEE /* ContactTableViewCell.swift */,
+				93BB39ED233746EE007E8138 /* DetailTableViewCell.swift */,
 				722F55A82334C12200AE1BC1 /* CustomUIImageView.swift */,
 				930FD9A523360DD20048FAEE /* ColorGradientView.swift */,
 			);
@@ -341,6 +344,7 @@
 				930FD99C23352CA50048FAEE /* Contact.swift in Sources */,
 				930FD9922333F63B0048FAEE /* Extensions.swift in Sources */,
 				930FD9A623360DD20048FAEE /* ColorGradientView.swift in Sources */,
+				93BB39EE233746EE007E8138 /* DetailTableViewCell.swift in Sources */,
 				930FD99E23352DAD0048FAEE /* NetworkManager.swift in Sources */,
 				930FD9872333C7500048FAEE /* AppDelegate.swift in Sources */,
 				930FD9882333C7500048FAEE /* DetailViewController.swift in Sources */,
