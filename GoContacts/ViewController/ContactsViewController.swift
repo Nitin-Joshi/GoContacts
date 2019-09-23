@@ -8,6 +8,10 @@
 
 import UIKit
 
+@objc protocol MasterViewControllerDelegate {
+    @objc optional func RefreshMasterDataSource ()
+}
+
 class ContactsViewController: UITableViewController {
     
     //Private variables
@@ -45,8 +49,6 @@ class ContactsViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
-        
-        self.tableView.reloadData()
     }
 
     @objc
@@ -66,9 +68,10 @@ extension ContactsViewController {
                 
                 let contact = ContactsViewModel(contact: Contact(favourite: false))
                 let detailsController = DetailsController(controller.self, contact: contact, isNewContact: true)
+                controller.masterViewDelegate = self
                 controller.detailController = detailsController
                 controller.prepareViewForAdd ()
-                
+    
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 
@@ -79,6 +82,7 @@ extension ContactsViewController {
                 
                 let contact = self.contactListController.contactList[indexPath.section][indexPath.row]
                 let detailsController = DetailsController(controller.self, contact: contact, isNewContact: false)
+                controller.masterViewDelegate = self
                 controller.detailController = detailsController
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -192,5 +196,14 @@ extension ContactsViewController {
     func HideSpinner () {
         spinner.removeFromSuperview()
         spinner.stopAnimating()
+    }
+}
+
+//MARK:- master view deleagte
+extension ContactsViewController : MasterViewControllerDelegate {
+    func RefreshMasterDataSource() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }

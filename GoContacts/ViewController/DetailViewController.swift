@@ -28,6 +28,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var inputAreaTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var inputTableView: UITableView!
     @IBOutlet weak var cameraButton: UIButton!
+    @IBOutlet weak var ContentView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     // privates
     private var leftBarItem: UIBarButtonItem!
@@ -49,19 +51,19 @@ class DetailViewController: UIViewController {
     private let displayElements: [InputValue] = [.Phone, .Email]
     private let editElements: [InputValue] = [.FirstName, .LastName, .Phone, .Email]
 
+    weak var masterViewDelegate: MasterViewControllerDelegate!
     public var detailController: DetailsController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         guard detailController != nil else {
+            ContentView.isHidden = true
             return
         }
         
-        if(UIDevice.current.userInterfaceIdiom == .phone) {
-            leftBarItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
-        }
-        
+        leftBarItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
+
         rightBarItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButtonTapped(_:)), tintColor:Constants.Colors.MainAppColor)
         navigationItem.rightBarButtonItem = rightBarItem
 
@@ -134,7 +136,6 @@ class DetailViewController: UIViewController {
     
     func prepareViewForAdd () {
         detailPageMode = .Add
-
     }
     
     @IBAction func cameraButtonTapped(_ sender: Any) {
@@ -155,9 +156,9 @@ class DetailViewController: UIViewController {
 
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            alert.popoverPresentationController?.sourceView = sender as? UIView
-            alert.popoverPresentationController?.sourceRect = (sender as AnyObject).bounds
-            alert.popoverPresentationController?.permittedArrowDirections = .up
+            alert.popoverPresentationController?.sourceView = self.view
+            alert.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: UIScreen.main.bounds.midY, width: 0, height: 0)
+            alert.popoverPresentationController?.permittedArrowDirections = []
         default:
             break
         }
@@ -166,6 +167,17 @@ class DetailViewController: UIViewController {
 
     }
     
+    private func closeEditScreen () {
+        DispatchQueue.main.async {
+            self.navigationItem.leftBarButtonItem = nil
+            self.navigationItem.rightBarButtonItem = nil
+            self.ContentView.isHidden = true
+            
+            self.masterViewDelegate?.RefreshMasterDataSource?()
+            
+            self.navigationController?.navigationController?.popToRootViewController(animated: true)
+        }
+    }
 }
 
     // MARK: - Action selector function
@@ -193,7 +205,7 @@ extension DetailViewController {
         DispatchQueue.main.async {
             if(self.detailController.isNewContact)
             {
-                self.navigationController?.navigationController?.popToRootViewController(animated: true)
+                self.closeEditScreen()
             }
             else
             {
@@ -204,6 +216,8 @@ extension DetailViewController {
                 self.detailController.ResetTempData()
                 
                 self.SetDetailUIForDisplayMode(true)
+                
+                self.masterViewDelegate.RefreshMasterDataSource?()
             }
         }
     }
@@ -218,7 +232,7 @@ extension DetailViewController {
                     DispatchQueue.main.async {
                         if(self.detailController.isNewContact)
                         {
-                            self.navigationController?.navigationController?.popToRootViewController(animated: true)
+                            self.closeEditScreen()
                         }
                         else
                         {
@@ -237,9 +251,9 @@ extension DetailViewController {
                 
                 switch UIDevice.current.userInterfaceIdiom {
                 case .pad:
-                    alertView.popoverPresentationController?.sourceView = sender as? UIView
-                    alertView.popoverPresentationController?.sourceRect = (sender as AnyObject).bounds
-                    alertView.popoverPresentationController?.permittedArrowDirections = .up
+                    alertView.popoverPresentationController?.sourceView = self.view
+                    alertView.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: UIScreen.main.bounds.midY, width: 0, height: 0)
+                    alertView.popoverPresentationController?.permittedArrowDirections = []
                 default:
                     break
                 }
@@ -250,7 +264,7 @@ extension DetailViewController {
             DispatchQueue.main.async {
                 if(self.detailController.isNewContact)
                 {
-                    self.navigationController?.navigationController?.popToRootViewController(animated: true)
+                    self.closeEditScreen()
                 }
                 else
                 {
@@ -513,4 +527,3 @@ extension DetailViewController : UIImagePickerControllerDelegate, UINavigationCo
         self.dismiss(animated: true, completion: nil)
     }
 }
-

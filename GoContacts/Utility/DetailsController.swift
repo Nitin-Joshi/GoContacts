@@ -8,10 +8,6 @@
 
 import Foundation
 
-//@objc protocol ContactDetailsDelegate: ControllerDelegate {
-//    @objc optional func NavigateToDetailPageWithContact (contactId: Int, indexPath: IndexPath)
-//}
-
 class DetailsController {
     
     var contactDetail: ContactsViewModel
